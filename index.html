@@ -496,7 +496,7 @@
 
         <div class="copy-container" id="copy-box" onclick="copyScript()">
             <div class="code-text">
-                <span class="code-keyword">loadstring</span>(<span class="code-func">game</span>:HttpGet(<span class="code-string">"https://craftxscript.wtf"</span>))()
+                <span class="code-keyword">loadstring</span>(<span class="code-func">game</span>:HttpGet(<span class="code-string">"https://craftxstudios.github.io/CraftXScript/script.lua"</span>))()
             </div>
             <div class="copy-icon" id="copy-icon-container">
                 <i class="fa-solid fa-copy"></i>
@@ -1183,7 +1183,7 @@ const rawLyrics = [
         }
 
         function copyScript() {
-            const scriptText = 'loadstring(game:HttpGet("https://craftxscript.wtf"))()';
+            const scriptText = 'loadstring(game:HttpGet("https://craftxstudios.github.io/CraftXScript/script.lua"))()';
             navigator.clipboard.writeText(scriptText).then(() => {
                 const notif = document.getElementById('notif');
                 notif.classList.add('show');
