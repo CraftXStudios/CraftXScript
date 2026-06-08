@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CraftX Script</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono&family=Anton&family=Bangers&family=Bebas+Neue&family=Luckiest+Guy&family=Permanent+Marker&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #050a06;
+            --primary: #22c55e;
+            --primary-glow: rgba(34, 197, 94, 0.3);
+            --glass-bg: rgba(10, 20, 12, 0.4);
+            --glass-border: rgba(34, 197, 94, 0.3);
+            --text-main: #ffffff;
+            --text-muted: #a1a1aa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1200px;
+        }
+
+        /* Mouse Cursor Trail */
+        .cursor-trail {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: var(--primary);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            box-shadow: 0 0 15px var(--primary);
+            transition: opacity 0.5s, transform 0.5s;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        /* Social Icons */
+        .social-container {
+            position: absolute;
+            bottom: 30px;
+            display: flex;
+            gap: 20px;
+            z-index: 50;
+        }
+
+        .social-btn {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: #fff;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-decoration: none;
+        }
+
+        .social-btn:hover {
+            transform: translateY(-10px) scale(1.1);
+            background: var(--primary);
+            color: #000;
+            box-shadow: 0 10px 20px rgba(34, 197, 94, 0.5);
+        }
+
+        .social-btn.youtube:hover {
+            background: #ff0000;
+            border-color: #ff0000;
+            box-shadow: 0 10px 20px rgba(255, 0, 0, 0.5);
+            color: #fff;
+        }
+        
+        .social-btn.discord:hover {
+            background: #5865F2;
+            border-color: #5865F2;
+            box-shadow: 0 10px 20px rgba(88, 101, 242, 0.5);
+            color: #fff;
+        }
+
+        /* Background Image with Parallax Support */
+        #bg-image {
+            position: absolute;
+            top: -10%;
+            left: -10%;
+            width: 120%;
+            height: 120%;
+            background-image: url('https://cdn.corenexis.com/files/c/9371584720.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: -1;
+            transition: transform 0.1s ease-out;
+            animation: breathe 8s infinite alternate ease-in-out;
+        }
+
+        @keyframes breathe {
+            0% { filter: brightness(0.6); }
+            100% { filter: brightness(1.1); }
+        }
+
+        /* Crazy Beat Drop Effects (6 Unique Types!) */
+        .beat-drop-1 #bg-image { animation: drop1 0.6s cubic-bezier(.36,.07,.19,.97) both !important; }
+        @keyframes drop1 {
+            0% { transform: scale(1.3) rotate(5deg); filter: contrast(200%) brightness(2) hue-rotate(90deg); }
+            100% { transform: scale(1) rotate(0deg); filter: contrast(100%) brightness(1) hue-rotate(0deg); }
+        }
+
+        .beat-drop-2 #bg-image { animation: drop2 0.5s cubic-bezier(.36,.07,.19,.97) both !important; }
+        @keyframes drop2 {
+            0%, 100% { filter: invert(0); transform: scale(1); }
+            20%, 80% { filter: invert(1) hue-rotate(180deg); transform: scale(1.2) skewX(15deg); }
+        }
+
+        .beat-drop-3 #bg-image { animation: drop3 0.7s ease-out both !important; }
+        @keyframes drop3 {
+            0% { transform: scale(1.5); filter: saturate(400%) blur(15px); }
+            100% { transform: scale(1); filter: saturate(100%) blur(0px); }
+        }
+
+        .beat-drop-4 #bg-image { animation: drop4 0.5s ease-out both !important; }
+        @keyframes drop4 {
+            0%, 100% { transform: scale(1); filter: none; }
+            50% { transform: scale(1.15) skewY(-10deg); filter: hue-rotate(270deg) contrast(150%); }
+        }
+
+        .beat-drop-5 #bg-image { animation: drop5 0.5s cubic-bezier(.36,.07,.19,.97) both !important; }
+        @keyframes drop5 {
+            0% { transform: scale(0.8) rotate(15deg); filter: grayscale(100%) brightness(3); }
+            100% { transform: scale(1) rotate(0deg); filter: grayscale(0%) brightness(1); }
+        }
+
+        .beat-drop-6 #bg-image { animation: drop6 0.4s ease-in both !important; }
+        @keyframes drop6 {
+            0% { transform: scale(1.4); filter: sepia(100%) saturate(300%) hue-rotate(300deg); }
+            100% { transform: scale(1); filter: none; }
+        }
+
+        .ui-shake { animation: beatShake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
+        @keyframes beatShake {
+            10%, 90% { transform: translate3d(-10px, 10px, 0) scale(1.02); }
+            20%, 80% { transform: translate3d(10px, -10px, 0) scale(1.02); }
+            30%, 50%, 70% { transform: translate3d(-15px, 15px, 0) scale(1.02); }
+            40%, 60% { transform: translate3d(15px, -15px, 0) scale(1.02); }
+        }
+
+        .bg-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 0;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .ambient-glow {
+            position: absolute;
+            width: 60vw;
+            height: 60vw;
+            background: radial-gradient(circle, var(--primary-glow) 0%, transparent 60%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            filter: blur(100px);
+            pointer-events: none;
+        }
+
+        /* Intro Screen Upgrades */
+        #enter-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, #111 0%, #000 100%);
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        #enter-screen::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(34,197,94,0.05) 2px, rgba(34,197,94,0.05) 4px);
+            pointer-events: none;
+        }
+
+        #enter-screen .glitch-title {
+            font-family: 'Anton', sans-serif;
+            font-size: 7rem;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 10px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 30px rgba(34,197,94,0.8), 5px 5px 0px rgba(0,0,0,1);
+            animation: float 4s ease-in-out infinite;
+        }
+
+        #enter-screen .click-text {
+            font-size: 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--primary);
+            letter-spacing: 5px;
+            animation: strobe 1.5s infinite;
+        }
+
+        @keyframes strobe {
+            0%, 100% { opacity: 1; text-shadow: 0 0 10px var(--primary); }
+            50% { opacity: 0.3; text-shadow: none; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        #main-content {
+            position: relative;
+            z-index: 20;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0;
+            transform: scale(0.95);
+            transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+            transform-style: preserve-3d;
+        }
+
+        #main-content.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .title {
+            font-size: 4.5rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+            background: linear-gradient(135deg, #fff 0%, var(--primary) 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transform: translateZ(30px);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-bottom: 40px;
+            font-weight: 300;
+            letter-spacing: 1px;
+            text-shadow: 0 5px 10px rgba(0,0,0,0.8);
+            transform: translateZ(20px);
+        }
+
+        /* 3D Tilt Copy Container */
+        .copy-container {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 20px 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8), 0 0 20px rgba(34, 197, 94, 0.2);
+            transition: transform 0.1s ease-out, box-shadow 0.3s ease;
+            max-width: 90vw;
+            transform: translateZ(50px);
+        }
+
+        .copy-container:hover {
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.9), 0 0 40px rgba(34, 197, 94, 0.5);
+            border-color: var(--primary);
+        }
+
+        .code-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1rem;
+            color: #d1d5db;
+            white-space: nowrap;
+        }
+        .code-keyword { color: #f472b6; }
+        .code-func { color: #60a5fa; }
+        .code-string { color: var(--primary); }
+
+        .copy-icon {
+            background: rgba(34, 197, 94, 0.2);
+            color: var(--primary);
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .copy-container:hover .copy-icon {
+            background: var(--primary);
+            color: #000;
+        }
+
+        #lyrics-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 5;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .lyric-word {
+            position: absolute;
+            font-size: 6.5rem;
+            text-transform: uppercase;
+            color: #fff;
+            -webkit-text-stroke: 4px #000;
+            text-shadow: 8px 8px 0px rgba(0,0,0,1);
+            margin: 0;
+            opacity: 0;
+            transform: scale(0.1) rotateZ(-30deg);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.5);
+            display: none;
+            white-space: nowrap;
+            letter-spacing: 3px;
+            line-height: 1;
+        }
+
+        .lyric-word.active {
+            opacity: 1;
+            display: block;
+        }
+
+        .lyric-word.exit {
+            opacity: 0;
+            transform: scale(1.5) translateY(-50px) rotateZ(20deg) !important;
+            display: block;
+            transition: all 0.2s ease-out;
+        }
+
+        .scattered-emoji {
+            position: absolute;
+            font-size: 5rem;
+            opacity: 0;
+            transform: scale(0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.5);
+            z-index: 4;
+            filter: drop-shadow(0px 10px 20px rgba(0,0,0,0.8));
+        }
+
+        .scattered-emoji.active { opacity: 1; }
+        .scattered-emoji.exit { opacity: 0; transform: scale(2) translateY(100px) !important; }
+
+        .splatter {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            opacity: 0;
+            z-index: 3;
+            transform: scale(0);
+            box-shadow: 0 0 20px var(--primary);
+        }
+
+        .splatter.active { animation: splatterAnim 0.6s ease-out forwards; }
+
+        @keyframes splatterAnim {
+            0% { transform: scale(0); opacity: 1; }
+            50% { opacity: 0.8; }
+            100% { transform: scale(10); opacity: 0; }
+        }
+
+        /* End Screen Title */
+        #end-screen-title {
+            position: absolute;
+            font-family: 'Anton', sans-serif;
+            font-size: 8rem;
+            color: #fff;
+            -webkit-text-stroke: 4px #000;
+            text-shadow: 10px 10px 0px var(--primary);
+            z-index: 9000;
+            text-transform: uppercase;
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(0.1) rotate(0deg);
+        }
+
+        #end-screen-title.active {
+            animation: spinAway 4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes spinAway {
+            0% { opacity: 0; transform: scale(0.1) rotate(-180deg); }
+            20% { opacity: 1; transform: scale(1.2) rotate(10deg); }
+            40% { opacity: 1; transform: scale(1) rotate(0deg); }
+            70% { opacity: 1; transform: scale(1) rotate(0deg); }
+            100% { opacity: 0; transform: scale(3) rotate(360deg) translateZ(500px); }
+        }
+
+        .notification {
+            position: fixed;
+            bottom: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid var(--primary);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            backdrop-filter: blur(10px);
+            transition: bottom 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+            opacity: 0;
+            z-index: 1000;
+        }
+        .notification.show { bottom: 100px; opacity: 1; }
+    </style>
+</head>
+<body>
+
+    <audio id="bg-audio" loop>
+        <source src="https://www.image2url.com/r2/default/audio/1780882198375-79bdc1e9-dfcc-461f-b3bb-29a88ef23c52.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="enter-screen" onclick="enterSite()">
+        <div class="glitch-title">CraftX</div>
+        <div class="click-text">[ CLICK TO INITIATE ]</div>
+    </div>
+
+    <!-- Background Layers -->
+    <div id="bg-image"></div>
+    <canvas id="rain-canvas"></canvas>
+    <div class="bg-overlay"></div>
+    <div class="ambient-glow"></div>
+
+    <div id="lyrics-container"></div>
+    
+    <!-- Epic End Title -->
+    <div id="end-screen-title">CraftX Studios</div>
+
+    <!-- Main Front UI -->
+    <div id="main-content">
+        <h1 class="title">CraftX Script</h1>
+        <p class="subtitle">The Ultimate Roblox Execution Experience</p>
+
+        <div class="copy-container" id="copy-box" onclick="copyScript()">
+            <div class="code-text">
+                <span class="code-keyword">loadstring</span>(<span class="code-func">game</span>:HttpGet(<span class="code-string">"https://craftxscript.wtf"</span>))()
+            </div>
+            <div class="copy-icon" id="copy-icon-container">
+                <i class="fa-solid fa-copy"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Socials -->
+    <div class="social-container">
+        <a href="https://discord.gg/zQtMEEgEEc" target="_blank" class="social-btn discord"><i class="fa-brands fa-discord"></i></a>
+        <a href="https://www.youtube.com/@CraftXStudios" target="_blank" class="social-btn youtube"><i class="fa-brands fa-youtube"></i></a>
+    </div>
+
+    <div class="notification" id="notif">
+        <i class="fa-solid fa-circle-check"></i> Script Copied to Clipboard!
+    </div>
+
+    <script>
+        // Use sync_tool.html to generate perfect rawLyrics and replace this array!
+        // These are estimates for the first verse.
+        
+
+        const explicitBeatDrops = [
+    5.06, 7.83, 119.8, 168.89, 169.3, 170.09, 170.49, 170.89, 172.69, 173.09, 173.49, 174.29, 174.7, 175.09, 175.89, 176.69, 177.09, 177.49, 177.89, 178.29, 179.49, 179.88, 182.09, 182.89, 183.69, 184.09, 185.49, 185.89, 186.29, 186.69, 187.09, 187.49, 187.9, 188.29, 188.7, 189.09, 189.49, 190.29, 190.69, 191.09
+];
+
+const rawLyrics = [
+    { time: 1.3, text: "We" },
+    { time: 1.96, text: "work" },
+    { time: 2.16, text: "crazy" },
+    { time: 2.79, text: "I" },
+    { time: 3.12, text: "learned" },
+    { time: 3.48, text: "from" },
+    { time: 3.72, text: "greezy," },
+    { time: 4.3, text: "it's" },
+    { time: 4.42, text: "a" },
+    { time: 4.62, text: "mongol" },
+    { time: 5.18, text: "team" },
+    { time: 7.46, text: "Cowboy" },
+    { time: 8.12, text: "Chief" },
+    { time: 8.78, text: "had" },
+    { time: 9.56, text: "on" },
+    { time: 9.72, text: "my" },
+    { time: 9.96, text: "hair" },
+    { time: 10.4, text: "right" },
+    { time: 10.76, text: "full" },
+    { time: 11.12, text: "of" },
+    { time: 11.52, text: "the" },
+    { time: 11.64, text: "scene" },
+    { time: 12.02, text: "Gooey" },
+    { time: 12.84, text: "sweater" },
+    { time: 13.06, text: "almost" },
+    { time: 13.56, text: "like" },
+    { time: 13.94, text: "a" },
+    { time: 14.08, text: "Christmas" },
+    { time: 14.54, text: "bitch" },
+    { time: 15.14, text: "Hey" },
+    { time: 15.48, text: "K47" },
+    { time: 16.46, text: "on" },
+    { time: 17.12, text: "my" },
+    { time: 17.26, text: "Christmas" },
+    { time: 17.66, text: "Solic" },
+    { time: 18.84, text: "bitch" },
+    { time: 19.14, text: "tried" },
+    { time: 19.54, text: "to" },
+    { time: 19.72, text: "ride" },
+    { time: 19.98, text: "me" },
+    { time: 20.14, text: "had" },
+    { time: 20.32, text: "to" },
+    { time: 20.48, text: "dump" },
+    { time: 20.78, text: "my" },
+    { time: 21.18, text: "cake" },
+    { time: 21.44, text: "That's" },
+    { time: 22.0, text: "the" },
+    { time: 22.14, text: "turn" },
+    { time: 22.34, text: "the" },
+    { time: 22.56, text: "ass" },
+    { time: 22.78, text: "pussy" },
+    { time: 23.08, text: "let" },
+    { time: 23.5, text: "me" },
+    { time: 23.62, text: "swim" },
+    { time: 23.92, text: "in" },
+    { time: 24.24, text: "We" },
+    { time: 24.74, text: "the" },
+    { time: 26.22, text: "rapers" },
+    { time: 27.32, text: "tev" },
+    { time: 27.6, text: "is" },
+    { time: 27.7, text: "hanging" },
+    { time: 27.94, text: "around" },
+    { time: 28.4, text: "town" },
+    { time: 29.44, text: "He" },
+    { time: 29.94, text: "and" },
+    { time: 30.16, text: "Mick" },
+    { time: 30.38, text: "Miller" },
+    { time: 30.74, text: "in" },
+    { time: 31.08, text: "your" },
+    { time: 31.3, text: "hoes" },
+    { time: 31.68, text: "down" },
+    { time: 31.94, text: "If" },
+    { time: 32.72, text: "you" },
+    { time: 32.88, text: "like" },
+    { time: 33.12, text: "your" },
+    { time: 33.32, text: "hoes" },
+    { time: 33.6, text: "you" },
+    { time: 33.74, text: "may" },
+    { time: 33.94, text: "just" },
+    { time: 34.1, text: "tie" },
+    { time: 34.36, text: "your" },
+    { time: 34.56, text: "hoes" },
+    { time: 34.88, text: "down" },
+    { time: 35.16, text: "My" },
+    { time: 35.4, text: "hoes" },
+    { time: 35.56, text: "ain't" },
+    { time: 36.12, text: "married" },
+    { time: 36.4, text: "him" },
+    { time: 36.76, text: "and" },
+    { time: 36.94, text: "Bailey" },
+    { time: 37.32, text: "made" },
+    { time: 37.5, text: "her" },
+    { time: 37.72, text: "go" },
+    { time: 37.92, text: "round" },
+    { time: 38.38, text: "Round" },
+    { time: 39.3, text: "them" },
+    { time: 39.38, text: "up" },
+    { time: 39.6, text: "just" },
+    { time: 39.86, text: "nothing" },
+    { time: 40.1, text: "on" },
+    { time: 40.5, text: "the" },
+    { time: 40.6, text: "rent" },
+    { time: 40.82, text: "Brand" },
+    { time: 41.1, text: "new" },
+    { time: 41.34, text: "band" },
+    { time: 41.48, text: "of" },
+    { time: 41.72, text: "Gucci" },
+    { time: 42.1, text: "pants" },
+    { time: 42.42, text: "Caught" },
+    { time: 42.72, text: "in" },
+    { time: 42.82, text: "cowboy" },
+    { time: 43.22, text: "I'm" },
+    { time: 43.58, text: "a" },
+    { time: 43.64, text: "champ" },
+    { time: 44.02, text: "He" },
+    { time: 44.28, text: "is" },
+    { time: 44.46, text: "Gucci," },
+    { time: 45.04, text: "Belle" },
+    { time: 45.08, text: "buckle" },
+    { time: 45.56, text: "with" },
+    { time: 45.88, text: "a" },
+    { time: 45.98, text: "revolver" },
+    { time: 46.26, text: "in" },
+    { time: 46.7, text: "my" },
+    { time: 46.84, text: "pants" },
+    { time: 47.18, text: "I" },
+    { time: 47.42, text: "bet" },
+    { time: 47.5, text: "you'll" },
+    { time: 47.8, text: "never" },
+    { time: 48.1, text: "win" },
+    { time: 48.42, text: "pool" },
+    { time: 48.72, text: "riding" },
+    { time: 49.16, text: "off" },
+    { time: 49.54, text: "a" },
+    { time: 49.7, text: "couple's" },
+    { time: 50.18, text: "Yeah," },
+    { time: 50.66, text: "I'm" },
+    { time: 51.18, text: "feeling" },
+    { time: 51.24, text: "soft" },
+    { time: 51.54, text: "and" },
+    { time: 51.96, text: "my" },
+    { time: 52.1, text: "hoes'" },
+    { time: 52.46, text: "typical" },
+    { time: 52.78, text: "up" },
+    { time: 53.42, text: "Then" },
+    { time: 53.58, text: "it's" },
+    { time: 53.82, text: "over," },
+    { time: 54.18, text: "keep" },
+    { time: 54.28, text: "it" },
+    { time: 54.38, text: "in" },
+    { time: 54.5, text: "song" },
+    { time: 54.82, text: "Then" },
+    { time: 55.16, text: "my" },
+    { time: 55.3, text: "cup" },
+    { time: 55.52, text: "coating" },
+    { time: 56.06, text: "porn" },
+    { time: 56.36, text: "from" },
+    { time: 56.68, text: "it's" },
+    { time: 56.92, text: "over" },
+    { time: 58.0, text: "Her" },
+    { time: 58.52, text: "gun," },
+    { time: 58.76, text: "she" },
+    { time: 59.48, text: "keep" },
+    { time: 59.6, text: "coming" },
+    { time: 59.92, text: "over" },
+    { time: 60.36, text: "and" },
+    { time: 60.6, text: "over" },
+    { time: 60.8, text: "We" },
+    { time: 61.1, text: "getting" },
+    { time: 61.24, text: "close," },
+    { time: 61.66, text: "she" },
+    { time: 61.86, text: "my" },
+    { time: 62.02, text: "cow" },
+    { time: 62.28, text: "girl" },
+    { time: 62.66, text: "I" },
+    { time: 62.96, text: "hoes" },
+    { time: 63.22, text: "to" },
+    { time: 65.56, text: "Have" },
+    { time: 66.08, text: "you" },
+    { time: 66.46, text: "healed" },
+    { time: 66.72, text: "Billy's," },
+    { time: 67.46, text: "killing" },
+    { time: 67.54, text: "him" },
+    { time: 67.78, text: "real" },
+    { time: 67.98, text: "Billy's" },
+    { time: 68.56, text: "Third" },
+    { time: 68.68, text: "base" },
+    { time: 68.88, text: "popping" },
+    { time: 69.1, text: "him" },
+    { time: 69.32, text: "real" },
+    { time: 69.6, text: "with" },
+    { time: 69.92, text: "a" },
+    { time: 70.08, text: "hoe" },
+    { time: 71.94, text: "Have" },
+    { time: 72.46, text: "you" },
+    { time: 72.8, text: "healed" },
+    { time: 73.18, text: "Billy's" },
+    { time: 73.74, text: "past" },
+    { time: 73.88, text: "me" },
+    { time: 74.06, text: "a" },
+    { time: 74.14, text: "pill" },
+    { time: 74.36, text: "I" },
+    { time: 74.7, text: "can't" },
+    { time: 74.94, text: "deal" },
+    { time: 75.14, text: "with" },
+    { time: 75.54, text: "it" },
+    { time: 75.68, text: "deal" },
+    { time: 75.92, text: "with" },
+    { time: 76.36, text: "it" },
+    { time: 76.54, text: "Doody" },
+    { time: 76.88, text: "sweater" },
+    { time: 77.04, text: "almost" },
+    { time: 77.6, text: "like" },
+    { time: 77.94, text: "a" },
+    { time: 78.08, text: "Christmas" },
+    { time: 78.62, text: "bitch" },
+    { time: 79.14, text: "Hey" },
+    { time: 79.46, text: "K47" },
+    { time: 80.34, text: "on" },
+    { time: 81.14, text: "my" },
+    { time: 81.26, text: "Christmas" },
+    { time: 82.32, text: "Solic" },
+    { time: 82.84, text: "bitch" },
+    { time: 83.16, text: "tried" },
+    { time: 83.5, text: "to" },
+    { time: 83.74, text: "ride" },
+    { time: 83.96, text: "me" },
+    { time: 84.14, text: "had" },
+    { time: 84.34, text: "to" },
+    { time: 84.5, text: "dump" },
+    { time: 84.76, text: "my" },
+    { time: 85.16, text: "cake" },
+    { time: 85.5, text: "That's" },
+    { time: 86.04, text: "the" },
+    { time: 86.12, text: "party" },
+    { time: 86.38, text: "ass" },
+    { time: 86.88, text: "pussy" },
+    { time: 87.12, text: "let" },
+    { time: 87.5, text: "me" },
+    { time: 87.62, text: "swim" },
+    { time: 87.92, text: "in" },
+    { time: 88.26, text: "Yeah," },
+    { time: 90.02, text: "we" },
+    { time: 90.72, text: "the" },
+    { time: 90.88, text: "rappers" },
+    { time: 91.14, text: "tough" },
+    { time: 91.5, text: "as" },
+    { time: 91.72, text: "gig" },
+    { time: 91.88, text: "around" },
+    { time: 92.34, text: "town" },
+    { time: 92.76, text: "We're" },
+    { time: 93.4, text: "supposed" },
+    { time: 93.4, text: "to" },
+    { time: 93.58, text: "be" },
+    { time: 94.0, text: "a" },
+    { time: 94.14, text: "mid" },
+    { time: 94.36, text: "-millionaire" },
+    { time: 95.18, text: "hoe" },
+    { time: 95.62, text: "down" },
+    { time: 95.94, text: "You" },
+    { time: 96.32, text: "feel" },
+    { time: 96.88, text: "like" },
+    { time: 97.14, text: "you're" },
+    { time: 97.4, text: "hoe" },
+    { time: 97.58, text: "you" },
+    { time: 97.74, text: "may" },
+    { time: 97.92, text: "just" },
+    { time: 98.12, text: "tie" },
+    { time: 98.34, text: "your" },
+    { time: 98.56, text: "hoe" },
+    { time: 98.84, text: "down" },
+    { time: 99.16, text: "My" },
+    { time: 99.38, text: "hoes" },
+    { time: 99.56, text: "ain't" },
+    { time: 100.12, text: "married" },
+    { time: 100.4, text: "him" },
+    { time: 100.76, text: "and" },
+    { time: 100.92, text: "Bailey" },
+    { time: 101.18, text: "made" },
+    { time: 101.54, text: "her" },
+    { time: 101.74, text: "go" },
+    { time: 101.94, text: "round" },
+    { time: 102.48, text: "Say" },
+    { time: 103.12, text: "he" },
+    { time: 103.3, text: "wanna" },
+    { time: 103.52, text: "have" },
+    { time: 104.0, text: "a" },
+    { time: 104.1, text: "shootout" },
+    { time: 104.32, text: "nigga" },
+    { time: 104.88, text: "where" },
+    { time: 105.08, text: "you" },
+    { time: 105.3, text: "at" },
+    { time: 105.76, text: "I" },
+    { time: 106.3, text: "met" },
+    { time: 106.5, text: "this" },
+    { time: 106.74, text: "alone" },
+    { time: 107.08, text: "getting" },
+    { time: 107.54, text: "flopped" },
+    { time: 108.14, text: "off" },
+    { time: 108.32, text: "the" },
+    { time: 108.46, text: "jack" },
+    { time: 108.84, text: "And" },
+    { time: 109.5, text: "the" },
+    { time: 109.6, text: "revolver" },
+    { time: 109.88, text: "on" },
+    { time: 110.28, text: "me" },
+    { time: 110.52, text: "I'm" },
+    { time: 110.74, text: "gonna" },
+    { time: 110.88, text: "meet" },
+    { time: 111.16, text: "you" },
+    { time: 111.32, text: "in" },
+    { time: 111.56, text: "the" },
+    { time: 111.7, text: "bag" },
+    { time: 112.04, text: "Shoot" },
+    { time: 112.72, text: "you" },
+    { time: 112.88, text: "in" },
+    { time: 113.16, text: "the" },
+    { time: 113.32, text: "face" },
+    { time: 113.48, text: "that's" },
+    { time: 113.82, text: "the" },
+    { time: 113.9, text: "weed" },
+    { time: 114.1, text: "type" },
+    { time: 114.3, text: "D5" },
+    { time: 114.8, text: "Smith" },
+    { time: 115.94, text: "and" },
+    { time: 116.14, text: "Wesson" },
+    { time: 116.52, text: "500" },
+    { time: 117.14, text: "in" },
+    { time: 117.58, text: "my" },
+    { time: 117.9, text: "grand" },
+    { time: 118.3, text: "But" },
+    { time: 118.6, text: "no" },
+    { time: 118.76, text: "one" },
+    { time: 119.06, text: "wants" },
+    { time: 119.24, text: "to" },
+    { time: 119.4, text: "go" },
+    { time: 119.58, text: "and" },
+    { time: 119.7, text: "cause" },
+    { time: 119.98, text: "for" },
+    { time: 120.28, text: "a" },
+    { time: 120.52, text: "hundred" },
+    { time: 120.88, text: "gold" },
+    { time: 121.14, text: "trims" },
+    { time: 121.78, text: "I" },
+    { time: 121.92, text: "ain't" },
+    { time: 122.06, text: "talking" },
+    { time: 122.46, text: "about" },
+    { time: 122.76, text: "whiskey" },
+    { time: 123.14, text: "when" },
+    { time: 123.54, text: "I" },
+    { time: 123.72, text: "say" },
+    { time: 123.96, text: "I" },
+    { time: 124.14, text: "got" },
+    { time: 124.3, text: "the" },
+    { time: 124.52, text: "dream" },
+    { time: 124.86, text: "Won't" },
+    { time: 125.24, text: "you" },
+    { time: 125.28, text: "post" },
+    { time: 125.56, text: "with" },
+    { time: 125.9, text: "the" },
+    { time: 126.06, text: "spark" },
+    { time: 126.26, text: "so" },
+    { time: 126.68, text: "that" },
+    { time: 126.94, text: "it's" },
+    { time: 127.36, text: "gold" },
+    { time: 127.58, text: "trims" },
+    { time: 128.66, text: "Yeah," },
+    { time: 129.92, text: "it's" },
+    { time: 130.54, text: "gold" },
+    { time: 130.82, text: "trims" },
+    { time: 132.74, text: "I'm" },
+    { time: 133.38, text: "robbing" },
+    { time: 133.64, text: "them" },
+    { time: 133.96, text: "for" },
+    { time: 134.34, text: "their" },
+    { time: 134.98, text: "loot" },
+    { time: 135.78, text: "They" },
+    { time: 136.22, text: "ain't" },
+    { time: 136.54, text: "gonna" },
+    { time: 136.78, text: "do" },
+    { time: 137.24, text: "shit" },
+    { time: 137.72, text: "Oh" },
+    { time: 138.78, text: "broke" },
+    { time: 139.16, text: "ass" },
+    { time: 139.66, text: "unabelled" },
+    { time: 140.64, text: "I'm" },
+    { time: 141.16, text: "gonna" },
+    { time: 141.16, text: "fight" },
+    { time: 141.16, text: "it" },
+    { time: 141.3, text: "almost" },
+    { time: 141.56, text: "like" },
+    { time: 141.94, text: "a" },
+    { time: 142.08, text: "Christmas" },
+    { time: 142.58, text: "Hey," },
+    { time: 143.68, text: "hey," },
+    { time: 143.9, text: "hey," },
+    { time: 144.68, text: "47" },
+    { time: 144.74, text: "on" },
+    { time: 145.16, text: "my" },
+    { time: 145.26, text: "Christmas" },
+    { time: 145.68, text: "It's" },
+    { time: 146.58, text: "all" },
+    { time: 146.72, text: "a" },
+    { time: 146.96, text: "bit" },
+    { time: 147.12, text: "shot" },
+    { time: 147.5, text: "to" },
+    { time: 147.72, text: "ride" },
+    { time: 147.96, text: "me" },
+    { time: 148.14, text: "had" },
+    { time: 148.32, text: "to" },
+    { time: 148.48, text: "dump" },
+    { time: 148.78, text: "my" },
+    { time: 149.18, text: "cake" },
+    { time: 149.46, text: "That's" },
+    { time: 150.0, text: "the" },
+    { time: 150.12, text: "party" },
+    { time: 150.36, text: "ass" },
+    { time: 150.8, text: "pussy" },
+    { time: 151.06, text: "let" },
+    { time: 151.5, text: "me" },
+    { time: 151.62, text: "swim" },
+    { time: 151.92, text: "in" },
+    { time: 152.22, text: "Yeah," },
+    { time: 153.14, text: "we" },
+    { time: 154.7, text: "the" },
+    { time: 154.86, text: "rappers" },
+    { time: 155.14, text: "tough" },
+    { time: 155.5, text: "as" },
+    { time: 155.68, text: "gig" },
+    { time: 155.88, text: "around" },
+    { time: 156.36, text: "town" },
+    { time: 156.7, text: "We're" },
+    { time: 157.42, text: "supposed" },
+    { time: 157.42, text: "to" },
+    { time: 157.54, text: "be" },
+    { time: 157.92, text: "a" },
+    { time: 158.12, text: "mid" },
+    { time: 158.36, text: "-millionaire" },
+    { time: 159.18, text: "hoe" },
+    { time: 159.6, text: "down" },
+    { time: 159.94, text: "You" },
+    { time: 160.28, text: "feel" },
+    { time: 160.88, text: "like" },
+    { time: 161.14, text: "you're" },
+    { time: 161.42, text: "hoe" },
+    { time: 161.56, text: "you" },
+    { time: 161.74, text: "may" },
+    { time: 161.92, text: "just" },
+    { time: 162.1, text: "tie" },
+    { time: 162.34, text: "your" },
+    { time: 162.56, text: "hoe" },
+    { time: 162.82, text: "down" },
+    { time: 163.18, text: "My" },
+    { time: 163.32, text: "hoes" },
+    { time: 163.58, text: "ain't" },
+    { time: 164.1, text: "married" },
+    { time: 164.44, text: "him" },
+    { time: 164.76, text: "and" },
+    { time: 164.94, text: "Bailey" },
+    { time: 165.18, text: "made" },
+    { time: 165.54, text: "her" },
+    { time: 165.72, text: "go" },
+    { time: 165.92, text: "round" },
+    { time: 201.52, text: "You" },
+    { time: 9999.0, text: "" }
+];
+        let triggeredDrops = new Set();
+        const wordLyrics = [];
+        const emojiRegex = /[\p{Emoji_Presentation}\p{Extended_Pictographic}]/gu;
+
+        for (let i = 0; i < rawLyrics.length - 1; i++) {
+            const currentLine = rawLyrics[i];
+            const nextLine = rawLyrics[i+1];
+            
+            let cleanText = currentLine.text;
+            let emojisInLine = cleanText.match(emojiRegex) || [];
+            cleanText = cleanText.replace(emojiRegex, '').trim();
+
+            const words = cleanText.split(/\s+/).filter(w => w.length > 0);
+            const duration = (nextLine.time - currentLine.time) * 0.9; 
+            const timePerWord = words.length > 0 ? duration / words.length : duration;
+
+            for (let w = 0; w < words.length; w += 2) {
+                const wordChunk = words.slice(w, w + 2).join(" ");
+                const chunkEmojis = w === 0 ? emojisInLine : [];
+                wordLyrics.push({
+                    time: currentLine.time + (w * timePerWord),
+                    text: wordChunk,
+                    emojis: chunkEmojis
+                });
+            }
+        }
+
+        const fonts = ["'Anton'", "'Bangers'", "'Bebas Neue'", "'Luckiest Guy'", "'Permanent Marker'"];
+        const colors = ["#FFFFFF", "#FFE600", "#4ade80", "#FF3366", "#00FFFF"];
+        
+        let currentLyricIndex = -1;
+        const lyricsContainer = document.getElementById('lyrics-container');
+        const audio = document.getElementById('bg-audio');
+        let spinAwayTriggered = false;
+
+        // Mouse Parallax & 3D Tilt Box
+        document.addEventListener('mousemove', (e) => {
+            const x = e.clientX / window.innerWidth - 0.5;
+            const y = e.clientY / window.innerHeight - 0.5;
+            
+            // BG Parallax
+            document.getElementById('bg-image').style.transform = `translate(${x * -30}px, ${y * -30}px)`;
+            
+            // Box 3D Tilt
+            const box = document.getElementById('copy-box');
+            box.style.transform = `translateZ(50px) rotateY(${x * 20}deg) rotateX(${y * -20}deg)`;
+
+            // Cursor Trail
+            createCursorTrail(e.clientX, e.clientY);
+        });
+
+        function createCursorTrail(x, y) {
+            const dot = document.createElement('div');
+            dot.className = 'cursor-trail';
+            dot.style.left = `${x}px`;
+            dot.style.top = `${y}px`;
+            document.body.appendChild(dot);
+            
+            setTimeout(() => {
+                dot.style.opacity = '0';
+                dot.style.transform = 'translate(-50%, -50%) scale(0.1)';
+            }, 50);
+            setTimeout(() => dot.remove(), 500);
+        }
+
+        function enterSite() {
+            document.getElementById('enter-screen').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('enter-screen').style.visibility = 'hidden';
+                document.getElementById('main-content').classList.add('visible');
+            }, 800);
+            audio.volume = 0.5;
+            audio.play().catch(e => console.log(e));
+            requestAnimationFrame(updateLyrics);
+        }
+
+        function createSplatter(x, y, color) {
+            for(let i=0; i<5; i++) {
+                const splat = document.createElement('div');
+                splat.className = 'splatter active';
+                splat.style.left = `${x + (Math.random()*100 - 50)}px`;
+                splat.style.top = `${y + (Math.random()*100 - 50)}px`;
+                splat.style.backgroundColor = color;
+                splat.style.boxShadow = `0 0 20px ${color}`;
+                lyricsContainer.appendChild(splat);
+                setTimeout(() => splat.remove(), 600);
+            }
+        }
+
+        function updateLyrics() {
+            const currentTime = audio.currentTime;
+
+            // Explicit Beat Drops
+            for (let drop of explicitBeatDrops) {
+                if (currentTime >= drop && currentTime <= drop + 0.5 && !triggeredDrops.has(drop)) {
+                    triggeredDrops.add(drop);
+                    
+                    const dropType = Math.floor(Math.random() * 6) + 1; // Now 6 effects
+                    document.body.classList.add(`beat-drop-${dropType}`);
+                    document.getElementById('main-content').classList.add('ui-shake');
+                    
+                    setTimeout(() => {
+                        document.body.classList.remove(`beat-drop-1`, `beat-drop-2`, `beat-drop-3`, `beat-drop-4`, `beat-drop-5`, `beat-drop-6`);
+                        document.getElementById('main-content').classList.remove('ui-shake');
+                    }, 600);
+                }
+            }
+
+            // CraftX Studios End Spin Away Logic (Triggers 4 seconds before end of song)
+            if (audio.duration && audio.duration - currentTime < 4.0 && !spinAwayTriggered) {
+                spinAwayTriggered = true;
+                const endTitle = document.getElementById('end-screen-title');
+                endTitle.classList.add('active');
+                
+                // Hide main content
+                document.getElementById('main-content').classList.remove('visible');
+                
+                setTimeout(() => {
+                    endTitle.classList.remove('active');
+                    // Reset loops
+                    spinAwayTriggered = false;
+                    document.getElementById('main-content').classList.add('visible');
+                    triggeredDrops.clear();
+                    currentLyricIndex = -1;
+                    lyricsContainer.innerHTML = '';
+                }, 4000);
+            }
+
+            let nextIndex = -1;
+            for (let i = 0; i < wordLyrics.length; i++) {
+                if (currentTime >= wordLyrics[i].time) {
+                    nextIndex = i;
+                } else {
+                    break;
+                }
+            }
+
+            if (nextIndex !== currentLyricIndex && nextIndex !== -1) {
+                while(lyricsContainer.children.length > 20) { 
+                    lyricsContainer.firstChild.remove();
+                }
+
+                const actives = document.querySelectorAll('.lyric-word.active, .scattered-emoji.active');
+                actives.forEach(el => {
+                    el.classList.remove('active');
+                    el.classList.add('exit');
+                    setTimeout(() => el.remove(), 250);
+                });
+
+                currentLyricIndex = nextIndex;
+                const data = wordLyrics[currentLyricIndex];
+
+                if (data.text.trim().length > 0) {
+                    const newLine = document.createElement('div');
+                    newLine.className = 'lyric-word active';
+                    newLine.textContent = data.text;
+
+                    let xPos = Math.random() * 70 + 5; 
+                    let yPos = Math.random() * 80 + 10; 
+                    
+                    newLine.style.left = `${xPos}%`;
+                    newLine.style.top = `${yPos}%`;
+                    newLine.style.fontFamily = fonts[Math.floor(Math.random() * fonts.length)];
+                    
+                    const wordColor = colors[Math.floor(Math.random() * colors.length)];
+                    newLine.style.color = wordColor;
+                    
+                    const rot = (Math.random() * 40) - 20;
+                    const scale = (Math.random() * 0.5) + 0.8;
+                    newLine.style.transform = `scale(${scale}) rotateZ(${rot}deg)`;
+                    
+                    lyricsContainer.appendChild(newLine);
+                    createSplatter(window.innerWidth * (xPos/100), window.innerHeight * (yPos/100), wordColor);
+                }
+
+                if (data.emojis && data.emojis.length > 0) {
+                    data.emojis.forEach(emoji => {
+                        const em = document.createElement('div');
+                        em.className = 'scattered-emoji active';
+                        em.textContent = emoji;
+                        em.style.left = `${Math.random() * 80 + 10}%`;
+                        em.style.top = `${Math.random() * 80 + 10}%`;
+                        const erot = (Math.random() * 60) - 30;
+                        const escale = (Math.random() * 1) + 0.8;
+                        em.style.transform = `scale(${escale}) rotateZ(${erot}deg)`;
+                        lyricsContainer.appendChild(em);
+                    });
+                }
+            }
+            requestAnimationFrame(updateLyrics);
+        }
+
+        function copyScript() {
+            const scriptText = 'loadstring(game:HttpGet("https://craftxscript.wtf"))()';
+            navigator.clipboard.writeText(scriptText).then(() => {
+                const notif = document.getElementById('notif');
+                notif.classList.add('show');
+                const icon = document.getElementById('copy-icon-container');
+                icon.innerHTML = '<i class="fa-solid fa-check"></i>';
+                setTimeout(() => {
+                    notif.classList.remove('show');
+                    icon.innerHTML = '<i class="fa-solid fa-copy"></i>';
+                }, 2000);
+            });
+        }
+
+        const canvas = document.getElementById('rain-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height, particles = [];
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() { this.reset(); this.y = Math.random() * height; }
+            reset() {
+                this.x = Math.random() * width;
+                this.y = -10;
+                this.length = Math.random() * 20 + 10;
+                this.speed = Math.random() * 15 + 10;
+                this.opacity = Math.random() * 0.5 + 0.1;
+                this.thickness = Math.random() * 1.5 + 0.5;
+            }
+            update() {
+                this.y += this.speed;
+                if (this.y > height) this.reset();
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.moveTo(this.x, this.y);
+                ctx.lineTo(this.x, this.y + this.length);
+                ctx.strokeStyle = `rgba(34, 197, 94, ${this.opacity})`;
+                ctx.lineWidth = this.thickness;
+                ctx.stroke();
+            }
+        }
+        for (let i = 0; i < 150; i++) particles.push(new Particle());
+
+        function animateRain() {
+            ctx.clearRect(0, 0, width, height);
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+            }
+            requestAnimationFrame(animateRain);
+        }
+        animateRain();
+    </script>
+</body>
+</html>

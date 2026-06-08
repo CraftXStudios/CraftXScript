@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfect Sync Tool</title>
+    <style>
+        body { font-family: sans-serif; background: #111; color: #fff; text-align: center; padding: 20px; }
+        #instructions { font-size: 1.2rem; color: #aaa; margin-bottom: 20px; }
+        #current-lyric { font-size: 3rem; font-weight: bold; color: #4ade80; margin: 40px 0; height: 100px;}
+        #next-lyric { font-size: 1.5rem; color: #666; }
+        #start-btn { padding: 15px 30px; font-size: 1.5rem; background: #22c55e; border: none; border-radius: 10px; cursor: pointer; color: #000; font-weight: bold; }
+        #result-box { display: none; margin-top: 30px; }
+        textarea { width: 80%; height: 300px; background: #222; color: #4ade80; border: 1px solid #444; padding: 10px; font-family: monospace; }
+        #copy-btn { padding: 10px 20px; background: #4ade80; color: #000; border: none; font-weight: bold; margin-top: 10px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <h1>CraftX Perfect Sync Tool ⏱️</h1>
+    <p id="instructions">
+        1. Click "Start Syncing". The song will play.<br>
+        2. Press the <b>SPACEBAR</b> exactly when you hear the next word.<br>
+        3. When the song is over, copy the code and replace `const rawLyrics` in `index.html`!
+    </p>
+
+    <button id="start-btn" onclick="startSync()">Start Syncing</button>
+
+    <div id="sync-ui" style="display:none;">
+        <div id="current-lyric">Get Ready...</div>
+        <div id="next-lyric">Next: (DY Krazy)</div>
+    </div>
+
+    <div id="result-box">
+        <h2>✅ Sync Complete!</h2>
+        <p>Copy this code and paste it over `const rawLyrics` in `index.html`:</p>
+        <textarea id="result-code" readonly></textarea><br>
+        <button id="copy-btn" onclick="copyCode()">Copy Code</button>
+    </div>
+
+    <audio id="audio">
+        <source src="https://www.image2url.com/r2/default/audio/1780882198375-79bdc1e9-dfcc-461f-b3bb-29a88ef23c52.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        const fullLyrics = [
+            "(DY Krazy) 🤪",
+            "All I want from Christmas 🎄",
+            "is some all-gold teeth 😁✨",
+            "Cowboy chief 🤠",
+            "hat on my head 🧢",
+            "rifle on the scene 🔫",
+            "Gucci sweater on me 🧥",
+            "like a Christmas list 📜 (Yee-haw) 🐎",
+            "AK-47 on my Christmas list 🔫🎄 (Yeah, yee-haw)",
+            "Son of a bitch tried to rob me 🤬",
+            "had to dump my clip 🔫💥",
+            "That's a purdy-ass pussy 🐱",
+            "let me swim in it 🏊‍♂️ (Uh, dibs, yee-haw)",
+            "Yeah, we the roughest, toughest niggas 🦍",
+            "'round town 🏙️ (Yeah, yeah)",
+            "What I'm totin' be a McMillan 🎯",
+            "then yo' ho down ⬇️ (Yeah, yeah, yeah)",
+            "If he like yo' ho 👩",
+            "he may just tie your ho down 🪢",
+            "I heard her name Mary 👧",
+            "hit, then Bailey made her go 'round 🔄 (Yee-haw)",
+            "Uh, round 'em up 🐎",
+            "just another day on the ranch 🌵",
+            "Brand new band in the Gucci pants 💰👖",
+            "Codeine cowboy, I'm a champ 🏆🥤",
+            "Big-ass Gucci belt buckle 💎",
+            "with a revolver in my pants 🔫",
+            "I bet you never went bull ridin' 🐂",
+            "off a couple xans 💊 (Yee-haw)",
+            "I keep a lil' somethin' in my holster 🔫",
+            "'cause if it go up, then it's over 💥",
+            "I keep a lil' somethin' in my cup 🥤",
+            "codeine pourin', runneth over 💜 (Ah)",
+            "Put a lil' somethin' in her gut 💊",
+            "She comin', she keep comin' over and over 🔄",
+            "We gettin' close, she my cowgirl 🤠",
+            "I feel her holster 🔫 (Yee-haw)",
+            "Beverly hillbillies, countin' them real milli's 💰",
+            "Dirtbikes poppin' them real wheelies 🏍️ (Yee-haw, yeah)",
+            "Beverly hillbillies, pass me a pill 💊",
+            "I can't deal with it, deal with it all 😵",
+            "Gucci sweater on me like a Christmas list 🧥🎄 (Yee-haw) 🐎",
+            "AK-47 on my Christmas list 🔫🎄 (Yeah, yee-haw)",
+            "Son of a bitch tried to rob me 🤬",
+            "had to dump my clip 🔫💥",
+            "That's a purdy-ass pussy 🐱",
+            "let me swim in it 🏊‍♂️ (Uh, dibs, yee-haw)",
+            "Yeah, we the roughest, toughest niggas 🦍",
+            "'round town 🏙️ (Yeah, yeah)",
+            "What I'm totin' be a McMillan 🎯",
+            "then yo' ho down ⬇️ (Yeah, yeah, yeah)",
+            "If he like yo' ho 👩",
+            "he may just tie your ho down 🪢",
+            "I heard her name Mary 👧",
+            "hit, then Bailey made her go 'round 🔄 (Yee-haw)",
+            "Say he wanna have a shootout, nigga, where you at? 🔫",
+            "I'm at the saloon gettin' slumped off the Jack 🥃",
+            "Got a revolver on me, I'm gon' meet you in the back 🤠",
+            "Shoot you in the face after we take these five steps 👣",
+            "Smith & Wesson five hundred in my grip 🔫",
+            "My new watch gon' cost five hundred, don't trip ⌚",
+            "I ain't talkin' 'bout whiskey when I say I got the drip 💧",
+            "Gucci boots with the spurs so the haters gon' trip 👢 (Yeah)",
+            "Haters gon' trip, yeah 🏃",
+            "I'm robbin' them for their loot, they ain't gon' do shit 💰",
+            "Old broke-ass son of bitch 🤡",
+            "Gucci sweater on me like a Christmas list 🧥🎄 (Yee-haw) 🐎",
+            "AK-47 on my Christmas list 🔫🎄 (Yeah, yee-haw)",
+            "Son of a bitch tried to rob me 🤬",
+            "had to dump my clip 🔫💥",
+            "That's a purdy-ass pussy 🐱",
+            "let me swim in it 🏊‍♂️ (Uh, dibs, yee-haw)",
+            "Yeah, we the roughest, toughest niggas 🦍",
+            "'round town 🏙️ (Yeah, yeah)",
+            "What I'm totin' be a McMillan 🎯",
+            "then yo' ho down ⬇️ (Yeah, yeah, yeah)",
+            "If he like yo' ho 👩",
+            "he may just tie your ho down 🪢",
+            "I heard her name Mary 👧",
+            "hit, then Bailey made her go 'round 🔄 (Yee-haw)",
+            "[ SONG OVER - PRESS SPACE TO END ]"
+        ];
+
+        let currentIndex = 0;
+        const syncedData = [];
+        const audio = document.getElementById('audio');
+        let isSyncing = false;
+
+        function startSync() {
+            document.getElementById('start-btn').style.display = 'none';
+            document.getElementById('sync-ui').style.display = 'block';
+            audio.play();
+            isSyncing = true;
+            updateUI();
+        }
+
+        function updateUI() {
+            if (currentIndex < fullLyrics.length) {
+                document.getElementById('next-lyric').textContent = "Next: " + fullLyrics[currentIndex];
+            }
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' && isSyncing) {
+                e.preventDefault();
+                const time = audio.currentTime.toFixed(2);
+                const text = fullLyrics[currentIndex];
+
+                if (currentIndex < fullLyrics.length - 1) {
+                    syncedData.push({ time: parseFloat(time), text: text });
+                    document.getElementById('current-lyric').textContent = text;
+                    currentIndex++;
+                    updateUI();
+                } else {
+                    // Finished
+                    isSyncing = false;
+                    audio.pause();
+                    syncedData.push({ time: parseFloat(time), text: "" }); // buffer
+                    generateCode();
+                }
+            }
+        });
+
+        function generateCode() {
+            document.getElementById('sync-ui').style.display = 'none';
+            document.getElementById('result-box').style.display = 'block';
+
+            let jsCode = "const rawLyrics = [\n";
+            syncedData.forEach((item, i) => {
+                jsCode += `    { time: ${item.time}, text: "${item.text}" }`;
+                if (i < syncedData.length - 1) jsCode += ",\n";
+                else jsCode += "\n";
+            });
+            jsCode += "];";
+
+            document.getElementById('result-code').value = jsCode;
+        }
+
+        function copyCode() {
+            const copyText = document.getElementById("result-code");
+            copyText.select();
+            document.execCommand("copy");
+            alert("Code Copied! Now replace the rawLyrics array in index.html with this.");
+        }
+    </script>
+</body>
+</html>
